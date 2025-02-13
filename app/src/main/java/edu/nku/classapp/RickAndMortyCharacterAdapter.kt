@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class RickAndMortyCharacterAdapter(private val characters: List<RickAndMortyCharacter>) :
     RecyclerView.Adapter<RickAndMortyCharacterAdapter.RickAndMortyCharacterViewHolder>() {
@@ -35,9 +36,13 @@ class RickAndMortyCharacterAdapter(private val characters: List<RickAndMortyChar
         position: Int
     ) {
         val character = characters[position]
-        holder.characterName.text = character.name
-        holder.characterAge.text = character.age.toString()
-        holder.characterImage.setImageResource(character.picture)
+        holder.characterName.text = holder.itemView.context.getString(R.string.name, character.name)
+        holder.characterAge.text = holder.itemView.context.getString(R.string.age, character.age)
+
+        Glide.with(holder.itemView.context)
+            .load(character.picture)
+            .placeholder(R.drawable.ic_launcher_background)
+            .into(holder.characterImage)
     }
 
 }

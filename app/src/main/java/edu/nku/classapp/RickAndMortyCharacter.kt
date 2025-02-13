@@ -5,5 +5,5 @@ data class RickAndMortyCharacter(
     val id: Int,
     val name: String,
     val planet: String,
-    val picture: Int,
+    val picture: String,
 )
