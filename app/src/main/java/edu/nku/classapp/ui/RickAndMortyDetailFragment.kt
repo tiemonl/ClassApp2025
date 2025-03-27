@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import edu.nku.classapp.databinding.FragmentCharacterDetailBinding
 import edu.nku.classapp.viewmodel.RickAndMortyCharacterViewModel
 
+@AndroidEntryPoint
 class RickAndMortyDetailFragment : Fragment() {
 
     private var _binding: FragmentCharacterDetailBinding? = null
@@ -26,10 +28,10 @@ class RickAndMortyDetailFragment : Fragment() {
         _binding = FragmentCharacterDetailBinding.inflate(inflater, container, false)
 
         if (arguments != null) {
-            val character = rickAndMortyCharacterViewModel.fetchById(
-                requireArguments().getInt(BUNDLE_ID)
-            )
-            binding.characterNameDetail.text = character.name
+//            val character = rickAndMortyCharacterViewModel.fetchById(
+//                requireArguments().getInt(BUNDLE_ID)
+//            )
+//            binding.characterNameDetail.text = character.name
         }
 
         return binding.root

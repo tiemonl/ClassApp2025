@@ -1,41 +1,38 @@
 package edu.nku.classapp.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edu.nku.classapp.model.RickAndMortyCharacter
+import edu.nku.classapp.data.model.RickAndMortyApiResponse
+import edu.nku.classapp.data.repository.RickAndMortyRepository
+import edu.nku.classapp.model.RickAndMortyCharacterResponse
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class RickAndMortyCharacterViewModel @Inject constructor() : ViewModel() {
-    private val characters = mutableListOf<RickAndMortyCharacter>()
+class RickAndMortyCharacterViewModel @Inject constructor(
+    private val rickAndMortyRepository: RickAndMortyRepository
+) : ViewModel() {
 
-    private val names = listOf("Rick", "Morty", "Summer", "Beth", "Jerry")
-    private val lastNames = listOf("Sanchez", "Dog", "Cat", "Smith")
-    private val planets = listOf("Earth", "Mars", "Jupiter", "Saturn", "Neptune")
+    private val _characters = MutableStateFlow<RickAndMortyCharacterState>(RickAndMortyCharacterState.Loading)
+    val characters: StateFlow<RickAndMortyCharacterState> = _characters.asStateFlow()
 
-    init {
-        createCharacters()
+    fun fillData() = viewModelScope.launch {
+        when (val response = rickAndMortyRepository.getCharacters()) {
+            RickAndMortyApiResponse.Error -> _characters.value = RickAndMortyCharacterState.Failure
+            is RickAndMortyApiResponse.Success -> _characters.value = RickAndMortyCharacterState.Success(response.characters)
+        }
+
     }
 
-    fun fillData() = characters.toList()
-
-    fun fetchById(id: Int) = characters.first { it.id == id }
-
-    private fun createCharacters() = (0..30).map { id ->
-        characters.add(
-            RickAndMortyCharacter(
-                age = Random.nextInt(1, 100),
-                id = id,
-                name = names.random() + " " + lastNames.random(),
-                planet = planets.random(),
-                picture = "https://rickandmortyapi.com/api/character/avatar/${
-                    Random.nextInt(
-                        1,
-                        100
-                    )
-                }.jpeg"
-            )
-        )
+    sealed class RickAndMortyCharacterState {
+        data class Success(val characters: List<RickAndMortyCharacterResponse.Character>): RickAndMortyCharacterState()
+        data object Failure : RickAndMortyCharacterState()
+        data object Loading : RickAndMortyCharacterState()
     }
+
 }

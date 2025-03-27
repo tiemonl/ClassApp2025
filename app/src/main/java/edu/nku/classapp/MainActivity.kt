@@ -3,9 +3,11 @@ package edu.nku.classapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import dagger.hilt.android.AndroidEntryPoint
 import edu.nku.classapp.databinding.ActivityMainBinding
 import edu.nku.classapp.ui.RickAndMortyCharacterListFragment
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
